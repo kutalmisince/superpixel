@@ -122,10 +122,12 @@ class Superpixel:
         rst = np.rint(np.linspace(0, self.height, num_v + 1)).astype(int)
         
         self.num_sps = 0
+        self.label_grid = np.zeros((num_v, num_h))
 
         # set label image and bounding box
         for j in range(num_v):
             for i in range(num_h):
+                self.label_grid[j,i] = self.num_sps
                 self.img_label[rst[j] : rst[j + 1], cst[i] : cst[i + 1]] = self.num_sps
                 self.bbox[self.num_sps, :] = [cst[i], rst[j], cst[i + 1], rst[j + 1]] 
                 self.num_sps += 1
