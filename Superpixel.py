@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 class Superpixel:
 
-    def __init__(self, compactness = 8.0, tiling = 'iSQUARE', exp_area = 256.0, num_req_sps = 0, spectral_cost = 'Bayesian', spatial_cost = 'Bayesian'):
+    def __init__(self, compactness = 8.0, tiling = 'iSQUARE', exp_area = 256.0, num_req_sps = 0, spectral_cost = 'Bayesian', spatial_cost = 'Bayesian', statistics_update_rate = 3):
         
         '''
         compactness: weight of spatial distance, can be any floating number
@@ -44,6 +44,7 @@ class Superpixel:
         # juct connected look-up table
         self.LUT_JC = np.array([0,1,1,0,1,0,0,0,1,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,1,0], dtype=bool)
         
+        self.statistics_update_rate = statistics_update_rate
         
     def extract_superpixels(self, img_proc, img_disp = None, main_channel = 0):
         
@@ -421,7 +422,8 @@ class Superpixel:
                 self.update_image_boundaries()
             
             # update sp distributions
-            self.update_sp_distributions()
+            if iteration % self.statistics_update_rate == 0 or iteration == self.max_iterations - 1:
+                self.update_sp_distributions()
                     
             if self.img_disp is not None:
                 plt.figure(dpi=300)
