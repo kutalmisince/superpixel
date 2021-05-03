@@ -12,6 +12,7 @@ from skimage.color import rgb2lab
 from PIL import Image
 import scipy.io as spio
 from Superpixel import Superpixel
+import time
 
 inp_img = Image.open('img1.bmp')
 img_disp = np.asarray(inp_img.crop((0, 0, inp_img.size[0] // 16 * 16, inp_img.size[1] // 16 * 16)))
@@ -50,8 +51,13 @@ for t in tiling:
             print('running ' + t + ', ' + spat + ', ' + spec)
             sp = Superpixel(tiling = t, spectral_cost = spec, spatial_cost = spat, compactness = 8)
             
+            start_time = time.time()
+            
             sp.extract_superpixels(img_proc)
             
+            print(time.time() - start_time)
+            
+            break
             out_img = sp.draw_boundaries(img_disp, color = [0, 255, 0])
     
             plt.figure(dpi=300)
